@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Dashboard</h3>
+    <span class="text-muted">Week starting: {{ week_start }}</span>
+</div>
+
+<!-- Summary cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Pending</div>
+                <div class="fs-3 fw-bold">{{ pending_count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Done</div>
+                <div class="fs-3 fw-bold">{{ done_count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Missed</div>
+                <div class="fs-3 fw-bold">{{ missed_count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Reminders Sent</div>
+                <div class="fs-3 fw-bold">{{ reminders_sent }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- This week's assignments -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5>This Week’s Assignments</h5>
+
+        {% if assignments|length == 0 %}
+        <p class="text-muted mb-0">No assignments generated for this week yet.</p>
+        {% else %}
+        <table class="table table-sm mt-3">
+            <thead>
+                <tr>
+                    <th>Chore</th>
+                    <th>User</th>
+                    <th>Due</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in assignments %}
+                <tr>
+                    <td><strong>{{ a.chore.name }}</strong></td>
+                    <td>{{ a.user.name }}</td>
+                    <td>{{ a.due_date }}</td>
+                    <td>{{ a.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Debt leaderboard -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5>Debt Leaderboard</h5>
+
+        {% if debt_rows|length == 0 %}
+        <p class="text-muted mb-0">No users.</p>
+        {% else %}
+        <table class="table table-sm mt-3">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Total</th>
+                    {% for c in chores %}
+                    <th>{{ c.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in debt_rows %}
+                <tr>
+                    <td><strong>{{ row.user }}</strong></td>
+                    <td class="fw-bold">{{ row.total }}</td>
+                    {% for c in chores %}
+                    <td>{{ row.per_chore[c.name] }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Monthly stats -->
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5>Monthly Stats (since {{ month_start }})</h5>
+
+        {% if monthly_rows|length == 0 %}
+        <p class="text-muted mb-0">No data.</p>
+        {% else %}
+        <table class="table table-sm mt-3">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Done</th>
+                    <th>Missed</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in monthly_rows %}
+                <tr>
+                    <td><strong>{{ row.user }}</strong></td>
+                    <td>{{ row.done }}</td>
+                    <td>{{ row.missed }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

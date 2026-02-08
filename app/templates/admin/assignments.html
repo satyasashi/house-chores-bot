@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Assignments</h3>
+    <span class="text-muted">Week starting: {{ week_start }}</span>
+</div>
+
+<div class="alert alert-info">
+    Weekly assignments are created by cron on Monday.
+    Locally, you can trigger it with curl:
+    <br>
+    <code>
+    curl -X POST http://127.0.0.1:5000/cron/generate-weekly-assignments -H "X-CRON-SECRET: super-secret"
+    </code>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5>This Week</h5>
+
+        {% if assignments|length == 0 %}
+        <p class="text-muted mb-0">No assignments for this week.</p>
+        {% else %}
+        <table class="table table-sm mt-3 align-middle">
+            <thead>
+                <tr>
+                    <th>Chore</th>
+                    <th>User</th>
+                    <th>Due</th>
+                    <th>Status</th>
+                    <th style="width: 320px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in assignments %}
+                <tr>
+                    <td><strong>{{ a.chore.name }}</strong></td>
+                    <td>{{ a.user.name }}</td>
+                    <td>{{ a.due_date }}</td>
+                    <td>
+                        {% if a.status == "done" %}
+                        <span class="badge bg-success">done</span>
+                        {% elif a.status == "missed" %}
+                        <span class="badge bg-danger">missed</span>
+                        {% elif a.status == "reassigned" %}
+                        <span class="badge bg-warning text-dark">reassigned</span>
+                        {% else %}
+                        <span class="badge bg-secondary">pending</span>
+                        {% endif %}
+                    </td>
+                    <td class="d-flex gap-2">
+                        <form method="POST" action="/admin/assignments/{{a.id}}/done">
+                            <button class="btn btn-sm btn-outline-success">Mark done</button>
+                        </form>
+
+                        <form method="POST" action="/admin/assignments/{{a.id}}/missed">
+                            <button class="btn btn-sm btn-outline-danger">Mark missed</button>
+                        </form>
+
+                        <form method="POST" action="/admin/assignments/{{a.id}}/reassign">
+                            <button class="btn btn-sm btn-outline-dark">Reassign</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

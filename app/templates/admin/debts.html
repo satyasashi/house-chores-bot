@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-3">Debt Table</h3>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        {% if users|length == 0 or chores|length == 0 %}
+        <p class="text-muted mb-0">Add users and chores first.</p>
+        {% else %}
+        <table class="table table-sm mt-3">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    {% for c in chores %}
+                    <th>{{ c.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td><strong>{{ u.name }}</strong></td>
+                    {% for c in chores %}
+                    <td>{{ debt_map[(u.id, c.id)] }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

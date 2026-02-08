@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Reminder Logs</h3>
+    <span class="text-muted">Week starting: {{ week_start }}</span>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        {% if logs|length == 0 %}
+        <p class="text-muted mb-0">No reminders sent this week.</p>
+        {% else %}
+        <table class="table table-sm mt-3 align-middle">
+            <thead>
+                <tr>
+                    <th>Sent At</th>
+                    <th>User</th>
+                    <th>Chore</th>
+                    <th>Due</th>
+                    <th>Reminder Key</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td style="white-space: nowrap;">{{ log.sent_at }}</td>
+                    <td><strong>{{ log.assignment.user.name }}</strong></td>
+                    <td>{{ log.assignment.chore.name }}</td>
+                    <td>{{ log.assignment.due_date }}</td>
+                    <td><code>{{ log.reminder_key }}</code></td>
+                    <td>
+                        {% if log.assignment.status == "done" %}
+                        <span class="badge bg-success">done</span>
+                        {% elif log.assignment.status == "missed" %}
+                        <span class="badge bg-danger">missed</span>
+                        {% elif log.assignment.status == "reassigned" %}
+                        <span class="badge bg-warning text-dark">reassigned</span>
+                        {% else %}
+                        <span class="badge bg-secondary">pending</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

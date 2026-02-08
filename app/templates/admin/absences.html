@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-3">Absences</h3>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5>Add Absence</h5>
+
+        <form method="POST" action="/admin/absences/create" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">User</label>
+                <select class="form-select" name="user_id" required>
+                    {% for u in users %}
+                    <option value="{{u.id}}">{{u.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Start</label>
+                <input type="date" class="form-control" name="start_date" required>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">End</label>
+                <input type="date" class="form-control" name="end_date" required>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Reason (optional)</label>
+                <input class="form-control" name="reason" placeholder="Out of city">
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-dark w-100">Add</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5>Current Absences</h5>
+
+        {% if absences|length == 0 %}
+        <p class="text-muted mb-0">No absences added yet.</p>
+        {% else %}
+        <table class="table table-sm mt-3 align-middle">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Duration</th>
+                    <th>Reason</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in absences %}
+                <tr>
+                    <td><strong>{{ a.user.name }}</strong></td>
+                    <td>{{ a.start_date }}</td>
+                    <td>{{ a.end_date }}</td>
+                    <td>{{ (a.end_date - a.start_date).days + 1 }} days</td>
+                    <td>{{ a.reason or "" }}</td>
+                    <td>
+                        <form method="POST" action="/admin/absences/{{a.id}}/delete">
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-3">Chore Exclusions</h3>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5>Exclude a user from a chore</h5>
+
+        <form method="POST" action="/admin/chore-exclusions/create" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Chore</label>
+                <select class="form-select" name="chore_id" required>
+                    {% for c in chores %}
+                    <option value="{{c.id}}">{{c.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">User</label>
+                <select class="form-select" name="user_id" required>
+                    {% for u in users %}
+                    <option value="{{u.id}}">{{u.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-dark w-100">Exclude</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5>Current Exclusions</h5>
+
+        {% if exclusions|length == 0 %}
+        <p class="text-muted mb-0">No exclusions set.</p>
+        {% else %}
+        <table class="table table-sm mt-3 align-middle">
+            <thead>
+                <tr>
+                    <th>Chore</th>
+                    <th>User</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in exclusions %}
+                <tr>
+                    <td><strong>{{ e.chore.name }}</strong></td>
+                    <td>{{ e.user.name }}</td>
+                    <td>
+                        <form method="POST" action="/admin/chore-exclusions/{{e.id}}/delete">
+                            <button class="btn btn-sm btn-outline-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

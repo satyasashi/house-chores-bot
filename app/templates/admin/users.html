@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-3">Users</h3>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5>Add User</h5>
+        <form method="POST" action="/admin/users/create" class="row g-2">
+            <div class="col-md-4">
+                <input class="form-control" name="name" placeholder="Name" required>
+            </div>
+            <div class="col-md-4">
+                <input class="form-control" name="phone_e164" placeholder="+1647..." required>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-dark w-100">Add</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5>Housemates</h5>
+
+        <table class="table table-sm mt-3">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Active</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.phone_e164 }}</td>
+                    <td>{{ "Yes" if u.is_active else "No" }}</td>
+                    <td>
+                        <form method="POST" action="/admin/users/{{u.id}}/toggle">
+                            <button class="btn btn-sm btn-outline-dark">
+                                {{ "Deactivate" if u.is_active else "Activate" }}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,5 @@
+.env
+instance/app.db
+instance/app.db-wal
+instance/app.db-shm
+__pycache__/

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-3">Chores</h3>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5>Add Chore</h5>
+
+        <form method="POST" action="/admin/chores/create" class="row g-2">
+            <div class="col-md-3">
+                <input class="form-control" name="name" placeholder="Garbage Cleanup" required>
+            </div>
+
+            <div class="col-md-2">
+                <select class="form-select" name="frequency_type">
+                    <option value="weekly">weekly</option>
+                    <option value="biweekly">biweekly</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <select class="form-select" name="day_of_week">
+                    <option value="0">Monday</option>
+                    <option value="1">Tuesday</option>
+                    <option value="2">Wednesday</option>
+                    <option value="3">Thursday</option>
+                    <option value="4">Friday</option>
+                    <option value="5">Saturday</option>
+                    <option value="6">Sunday</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <input class="form-control" name="reminder_rules_json"
+                    placeholder='[{"key":"monday","dow":0,"hour":9},{"key":"thursday","dow":3,"hour":19}]'>
+            </div>
+
+            <div class="col-md-1">
+                <button class="btn btn-dark w-100">Add</button>
+            </div>
+        </form>
+
+        <p class="text-muted mt-2 mb-0">
+            Reminder rules JSON example: [{"key":"monday","dow":0,"hour":9},{"key":"thursday","dow":3,"hour":19}]
+        </p>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5>Chore List</h5>
+
+        <table class="table table-sm mt-3">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Frequency</th>
+                    <th>Day</th>
+                    <th>Reminder Rules</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in chores %}
+                <tr>
+                    <td>{{ c.name }}</td>
+                    <td>{{ c.frequency_type }}</td>
+                    <td>{{ c.day_of_week }}</td>
+                    <td style="font-family: monospace;">{{ c.reminder_rules_json }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
