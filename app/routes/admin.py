@@ -221,7 +221,7 @@ def chores_create():
 def assignments():
     today = date.today()
     week_start = today - timedelta(days=today.weekday())
-    
+
     assignments = (
         Assignment.query
         .filter(Assignment.week_start_date == week_start)
@@ -359,6 +359,21 @@ def assignment_reassign(assignment_id):
     db.session.commit()
 
     flash(f"Reassigned to {new_user.name}.")
+    return redirect(url_for("admin.assignments"))
+
+
+@admin_bp.post("/assignments/<int:assignment_id>/delete")
+@login_required
+def assignment_delete(assignment_id):
+    a = Assignment.query.get_or_404(assignment_id)
+
+    # delete reminder logs tied to this assignment
+    ReminderLog.query.filter_by(assignment_id=a.id).delete()
+
+    db.session.delete(a)
+    db.session.commit()
+
+    flash("Assignment deleted.")
     return redirect(url_for("admin.assignments"))
 
 
@@ -509,3 +524,27 @@ def chore_exclusions_delete(exclusion_id):
     db.session.commit()
     flash("Exclusion removed.")
     return redirect(url_for("admin.chore_exclusions"))
+
+
+@admin_bp.get("/chores/<int:chore_id>/edit")
+@login_required
+def chore_edit(chore_id):
+    c = Chore.query.get_or_404(chore_id)
+    return render_template("admin/chore_edit.html", chore=c)
+
+
+@admin_bp.post("/chores/<int:chore_id>/update")
+@login_required
+def chore_update(chore_id):
+    c = Chore.query.get_or_404(chore_id)
+
+    c.name = request.form["name"].strip()
+    c.frequency = request.form["frequency_type"]
+    c.day_of_week = int(request.form["day_of_week"])
+
+    reminder_rules_raw = request.form.get("reminder_rules_json", "[]").strip()
+    c.reminder_rules_json = reminder_rules_raw  # keep raw json string
+
+    db.session.commit()
+    flash("Chore updated.")
+    return redirect(url_for("admin.chores"))

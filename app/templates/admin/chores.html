@@ -58,6 +58,7 @@
                     <th>Frequency</th>
                     <th>Day</th>
                     <th>Reminder Rules</th>
+                    <th style="width: 140px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -67,9 +68,15 @@
                     <td>{{ c.frequency_type }}</td>
                     <td>{{ c.day_of_week }}</td>
                     <td style="font-family: monospace;">{{ c.reminder_rules_json }}</td>
+                    <td>
+                        <a href="/admin/chores/{{ c.id }}/edit" class="btn btn-sm btn-outline-primary">
+                            Edit
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
+
         </table>
 
     </div>

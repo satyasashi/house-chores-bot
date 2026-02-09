@@ -55,15 +55,21 @@
                     </td>
                     <td class="d-flex gap-2">
                         <form method="POST" action="/admin/assignments/{{a.id}}/done">
-                            <button class="btn btn-sm btn-outline-success">Mark done</button>
+                            <button class="btn btn-sm btn-outline-success">Done</button>
                         </form>
 
                         <form method="POST" action="/admin/assignments/{{a.id}}/missed">
-                            <button class="btn btn-sm btn-outline-danger">Mark missed</button>
+                            <button class="btn btn-sm btn-outline-danger">Missed</button>
                         </form>
 
                         <form method="POST" action="/admin/assignments/{{a.id}}/reassign">
                             <button class="btn btn-sm btn-outline-dark">Reassign</button>
+                        </form>
+
+                        <form method="POST" action="/admin/assignments/{{a.id}}/delete" onsubmit="return confirm('Delete this assignment?');">
+                            <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </form>
                     </td>
                 </tr>

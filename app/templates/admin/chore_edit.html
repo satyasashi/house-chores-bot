@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-3">Edit Chore</h3>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <form method="POST" action="/admin/chores/{{ chore.id }}/update" class="row g-3">
+
+            <div class="col-md-4">
+                <label class="form-label">Name</label>
+                <input class="form-control" name="name" value="{{ chore.name }}" required>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Frequency</label>
+                <select class="form-select" name="frequency_type">
+                    <option value="weekly" {% if chore.frequency_type=="weekly" %}selected{% endif %}>weekly</option>
+                    <option value="biweekly" {% if chore.frequency_type=="biweekly" %}selected{% endif %}>biweekly
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Day</label>
+                <select class="form-select" name="day_of_week">
+                    <option value="0" {% if chore.day_of_week==0 %}selected{% endif %}>Monday</option>
+                    <option value="1" {% if chore.day_of_week==1 %}selected{% endif %}>Tuesday</option>
+                    <option value="2" {% if chore.day_of_week==2 %}selected{% endif %}>Wednesday</option>
+                    <option value="3" {% if chore.day_of_week==3 %}selected{% endif %}>Thursday</option>
+                    <option value="4" {% if chore.day_of_week==4 %}selected{% endif %}>Friday</option>
+                    <option value="5" {% if chore.day_of_week==5 %}selected{% endif %}>Saturday</option>
+                    <option value="6" {% if chore.day_of_week==6 %}selected{% endif %}>Sunday</option>
+                </select>
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label">Reminder Rules JSON</label>
+                <textarea class="form-control" name="reminder_rules_json" rows="3"
+                    style="font-family: monospace;">{{ chore.reminder_rules_json }}</textarea>
+                <div class="form-text">
+                    Example: [{"key":"monday","dow":0,"hour":9},{"key":"thursday","dow":3,"hour":19}]
+                </div>
+            </div>
+
+            <div class="col-12">
+                <button class="btn btn-dark">Save</button>
+                <a href="/admin/chores" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
