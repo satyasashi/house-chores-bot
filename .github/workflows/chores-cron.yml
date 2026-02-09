@@ -2,22 +2,24 @@ name: House Chores Bot Cron
 
 on:
     schedule:
-        # Monday 9 AM Toronto (winter = UTC-5)
-        - cron: "0 14 * * 1"
-        # Thursday 7 PM Toronto (winter = UTC-5)
-        - cron: "0 0 * * 5"
+        - cron: "0 * * * *" # every hour (UTC)
     workflow_dispatch:
 
 jobs:
     chores_cron:
         runs-on: ubuntu-latest
         steps:
-            - name: Generate weekly assignments
-              run: |
-                  curl -X POST "${{ secrets.BASE_URL }}/cron/generate-weekly-assignments" \
-                  -H "X-CRON-SECRET: ${{ secrets.CRON_SECRET }}"
-
             - name: Send reminders
               run: |
                   curl -X POST "${{ secrets.BASE_URL }}/cron/send-reminders" \
-                  -H "X-CRON-SECRET: ${{ secrets.CRON_SECRET }}"
+                      -H "X-CRON-SECRET: ${{ secrets.CRON_SECRET }}"
+
+            - name: Generate weekly assignments (only Monday)
+              run: |
+                  DOW=$(date -u +%u)
+                  if [ "$DOW" = "1" ]; then
+                      curl -X POST "${{ secrets.BASE_URL }}/cron/generate-weekly-assignments" \
+                      -H "X-CRON-SECRET: ${{ secrets.CRON_SECRET }}"
+                  else
+                      echo "Not Monday UTC, skipping assignment generation."
+                  fi
