@@ -221,7 +221,7 @@ def chores_create():
 def assignments():
     today = date.today()
     week_start = today - timedelta(days=today.weekday())
-
+    
     assignments = (
         Assignment.query
         .filter(Assignment.week_start_date == week_start)
@@ -239,6 +239,45 @@ def assignments():
         chores=chores,
         week_start=week_start
     )
+
+
+@admin_bp.get("/assignments/new")
+@login_required
+def assignment_new():
+    users = User.query.filter_by(is_active=True).order_by(User.name.asc()).all()
+    chores = Chore.query.order_by(Chore.name.asc()).all()
+    return render_template("admin/assignment_new.html", users=users, chores=chores)
+
+
+@admin_bp.post("/assignments/create")
+@login_required
+def assignment_create():
+    chore_id = int(request.form["chore_id"])
+    user_id = int(request.form["user_id"])
+    due_date_str = request.form["due_date"]
+    status = request.form["status"]
+
+    due_date = datetime.strptime(due_date_str, "%Y-%m-%d").date()
+
+    # week_start_date = Monday of that week
+    week_start_date = due_date - timedelta(days=due_date.weekday())
+
+    a = Assignment(
+        chore_id=chore_id,
+        user_id=user_id,
+        due_date=due_date,
+        week_start_date=week_start_date,
+        status=status,
+    )
+
+    if status == "done":
+        a.completed_at = datetime.now()
+
+    db.session.add(a)
+    db.session.commit()
+
+    flash("Assignment created.")
+    return redirect(url_for("admin.assignments"))
 
 
 @admin_bp.post("/assignments/<int:assignment_id>/done")

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-3">Add Assignment (Past Week / Manual)</h3>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <form method="POST" action="/admin/assignments/create" class="row g-3">
+
+            <div class="col-md-4">
+                <label class="form-label">Chore</label>
+                <select name="chore_id" class="form-select" required>
+                    {% for c in chores %}
+                    <option value="{{c.id}}">{{c.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">User</label>
+                <select name="user_id" class="form-select" required>
+                    {% for u in users %}
+                    <option value="{{u.id}}">{{u.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Due Date</label>
+                <input type="date" name="due_date" class="form-control" required>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select" required>
+                    <option value="done">done</option>
+                    <option value="pending">pending</option>
+                    <option value="missed">missed</option>
+                    <option value="reassigned">reassigned</option>
+                </select>
+            </div>
+
+            <div class="col-12">
+                <button class="btn btn-dark">Create Assignment</button>
+                <a href="/admin/assignments" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
